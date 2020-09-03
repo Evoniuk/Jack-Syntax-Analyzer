@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hack VM Compiler</title>
+
+  <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+  <h2>Jack Syntax Analyzer</h2>
+
+  <p>This is a syntax analyzer for Jack code, and project 10 in the Nand to Tetris course. You can copy and paste the code here:</p>
+
+  <textarea placeholder="enter code here" id="codeInput" spellcheck="false"></textarea>
+  <button type="button" id="inputCode">submit</button>
+
+  <p>Alternatively, you can select a directory:</p>
+
+  <input type="file" id="fileInput" name="myfile" multiple webkitdirectory>
+
+  <p>Note that errors won't be noted. If there's an error in your code you're on your own.</p>
+
+  <script src="./src/stripWhitespace.js"></script>
+  <script src="./src/regex.js"></script>
+  <script src="./src/tokenizer.js"></script>
+  <script src="./src/analyze.js"></script>
+  <script src="main.js"></script>
+</body>
+</html>
