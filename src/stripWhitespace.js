@@ -14,7 +14,11 @@ function stripWhitespace(code) {
     if (!inComment) result += code[i];
   }
 
-  return result.split(/\r|\n/).map(removeInlineComments).join('\n');
+  return result
+    .split(/\r|\n/)
+    .map(removeInlineComments)
+    .filter(line => line !== '')
+    .join('\n');
 }
 
 function removeInlineComments(line) {

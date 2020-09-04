@@ -2,7 +2,65 @@
 
 This is project 10 in the Nand to Tetris course. The only difference is that instead of producing an XML file, this program produces a JSON file, which allows it to be more easily processed.
 
-The way it works is fairly straightforward. Each grammatical structure is made into an object, which is assembled by function calls that assemble the constituent pieces of that grammatical structure. It would probably be more clear with an example:
+## General Overview
+
+When this program receives code it goes through three main steps, each step considerbly more complex than the previous. These steps are
+
+1. Removal of whitespace
+2. Tokenization
+3. Syntax analysis
+
+These tasks are handled respectively by
+
+1. `stripWhitespace.js`
+2. `tokenizer.js`
+3. `analyze.js`
+
+`stripWhitespace.js` is a fairly boring program, but we'll look at the other two.
+
+### `tokenizer.js`
+
+The tokenizer is handled by two functions. One of them provides an array of all tokens. It does this by looking through the string that is provided to it and continually matching the largest substring that matches a certain regular expression. This regular expression matches against any valid token. This array is produced by the following function:
+
+```js
+function listMatches(string, regex) {
+  const result = [];
+  for (let i = 0; i < string.length;) {
+    const match = string.substring(i).match(regex);
+    if (!match) break;
+    result.push(match[0]);
+    i += match.index + match[0].length;
+  }
+
+  return result;
+}
+```
+
+This function is called by the `tokenize` function, which creates a new array of tokens, but now each token is an object with a `token` key and `type` key. This function is implemented as so:
+
+```js
+function tokenize(code) {
+  const regexes = provideRegexes();
+  const tokens = listMatches(code, regexes.lexicalElementsRegex);
+
+  return tokens.map(token => ({
+    token: token,
+    type:
+      regexes.keywordRegex         .test(token) ? 'keyword'         : // keyword test must
+      regexes.symbolRegex          .test(token) ? 'symbol'          : // precede identifier
+      regexes.integerConstantRegex .test(token) ? 'integerConstant' : // and stringConstant
+      regexes.stringConstantRegex  .test(token) ? 'stringConstant'  : // must precede identifier
+      regexes.identifierRegex      .test(token) ? 'identifier'      :
+      null,
+  }));
+}
+```
+
+You might notice the odd but aesthetically pleasing alignment. I don't know how much it adds to the readability, but it looks neat and tidy, and shows the similarity of the structures involved more clearly. This kind of alignment is used throughout `analyze.js` as well.
+
+### `analyze.js`
+
+The way `analyze.js` works is complex due, but fairly straightforward. Each grammatical structure is made into an object, which is assembled by function calls that assemble the constituent pieces of that grammatical structure. It would probably be more clear with an example:
 
 ```js
 function eatSubroutineBody(parseObject, regexes) {
@@ -30,4 +88,4 @@ Anyway, each function that begins with "eat" advances `currentIndex` by however 
 
 Because of the nested nature of the program, however, there's actually only need for one function to advance `currentIndex`, that function being `eatTerminalToken`, which always advances the index by one.
 
-That's the essential nature of the analyzer. There's a bit more to the tokenization process and all that, which is accomplished by looking through and matching regexes, but nothing too complicated.
+And that's essentially it.
