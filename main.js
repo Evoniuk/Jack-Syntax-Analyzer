@@ -17,7 +17,7 @@ document.getElementById('fileInput').addEventListener('change', function() {
 
       if (i === files.length - 1) {
         const fileNames = files.map(file => file.name.substring(0, file.name.indexOf('.')));
-        codeFromFiles.forEach((file, index) => download(fileNames[index] + '.hack', compileFile(file)));
+        codeFromFiles.forEach((file, index) => download(fileNames[index] + '.json', compileFile(file)));
       }
     }
 
